@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Secure Node{% endblock %}
+
+{% block body %}
+<aside class="sidebar">
+    <div class="brand">
+        <i class="bi bi-shield-lock-fill me-3"></i>SECURE NODE
+    </div>
+
+    <nav class="nav flex-column mb-auto">
+        <a class="nav-link active" href="{{ url_for('dashboard') }}">
+            <i class="bi bi-grid-1x2-fill"></i>Dashboard
+        </a>
+        <a class="nav-link" href="{{ url_for('users_page') }}">
+            <i class="bi bi-people-fill"></i>User Management
+        </a>
+        <a class="nav-link" href="{{ url_for('contacts_page') }}">
+            <i class="bi bi-person-lines-fill"></i>Global Contacts
+        </a>
+        <a class="nav-link" href="{{ url_for('messages_page') }}">
+            <i class="bi bi-chat-square-text-fill"></i>Message Logs
+        </a>
+    </nav>
+
+    <div class="pt-4 mt-4 border-top border-secondary border-opacity-25">
+        <div class="glass-card p-3 mb-3 border-0" style="background: rgba(255, 255, 255, 0.03);">
+            <div class="user-badge">
+                <div class="avatar shadow-sm">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small text-white">{{ user.username }}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">{{ user.role|upper }} ACCOUNT</div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('logout') }}"
+            class="glass-btn w-100 d-flex align-items-center justify-content-center text-decoration-none">
+            <i class="bi bi-box-arrow-left me-2"></i>Terminate Session
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold mb-1" style="letter-spacing: -1px;">System Dashboard</h1>
+            <p class="text-muted mb-0">Operational overview of the security infrastructure</p>
+        </div>
+        <div class="text-end">
+            <div class="small fw-bold text-muted mb-1">NODE STATUS</div>
+            <div class="d-flex align-items-center text-success small fw-bold">
+                <span class="pulse-dot me-2"></span>OPERATIONAL
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card stats-card h-100 border-0">
+                <div class="stats-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--primary);">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stats-value">{{ stats.total_users }}</div>
+                <div class="stats-label">Authorized Users</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card stats-card h-100 border-0">
+                <div class="stats-icon" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-sky);">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+                <div class="stats-value">{{ stats.total_contacts }}</div>
+                <div class="stats-label">Stored Contacts</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card stats-card h-100 border-0">
+                <div class="stats-icon" style="background: rgba(52, 211, 153, 0.1); color: var(--accent-emerald);">
+                    <i class="bi bi-chat-dots-fill"></i>
+                </div>
+                <div class="stats-value">{{ stats.total_messages }}</div>
+                <div class="stats-label">Logged Messages</div>
+            </div>
+        </div>
+        {% if stats.my_users is not none %}
+        <div class="col-md-6 col-lg-3">
+            <div class="glass-card stats-card h-100 border-0">
+                <div class="stats-icon" style="background: rgba(251, 191, 36, 0.1); color: var(--accent-amber);">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div class="stats-value">{{ stats.my_users }}</div>
+                <div class="stats-label">Worker Subsets</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="glass-card h-100 border-0">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1">Administrative Actions</h5>
+                        <p class="text-muted small mb-0">Quick access to core functions</p>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <a href="{{ url_for('users_page') }}"
+                            class="glass-card border-0 d-block text-decoration-none p-4 h-100 shadow-sm"
+                            style="background: rgba(255, 255, 255, 0.03);">
+                            <i class="bi bi-person-plus-fill text-primary d-block mb-3" style="font-size: 1.5rem;"></i>
+                            <span class="d-block fw-bold text-white mb-1">Provision User</span>
+                            <span class="d-block text-muted" style="font-size: 0.75rem;">Scale your workforce</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ url_for('contacts_page') }}"
+                            class="glass-card border-0 d-block text-decoration-none p-4 h-100 shadow-sm"
+                            style="background: rgba(255, 255, 255, 0.03);">
+                            <i class="bi bi-search text-info d-block mb-3" style="font-size: 1.5rem;"></i>
+                            <span class="d-block fw-bold text-white mb-1">Data Explorer</span>
+                            <span class="d-block text-muted" style="font-size: 0.75rem;">Query unified data store</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="glass-card h-100 border-0">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1">System Environment</h5>
+                        <p class="text-muted small mb-0">Identity and deployment details</p>
+                    </div>
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center border-bottom border-white border-opacity-10 pb-3">
+                        <div class="text-muted small flex-grow-1">Authorized Profile</div>
+                        <div class="fw-bold">{{ user.username }}</div>
+                    </div>
+                    <div class="d-flex align-items-center border-bottom border-white border-opacity-10 pb-3">
+                        <div class="text-muted small flex-grow-1">Privilege Level</div>
+                        <div><span class="badge-role role-{{ user.role }}">{{ user.role }}</span></div>
+                    </div>
+                    <div class="d-flex align-items-center border-bottom border-white border-opacity-10 pb-3">
+                        <div class="text-muted small flex-grow-1">Deployment ID</div>
+                        <div class="font-monospace small text-primary">NODE-LTS-8842</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="text-muted small flex-grow-1">Session Initialized</div>
+                        <div class="text-muted small">{{ user.created_at[:16] }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #22c55e;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+        }
+    }
+
+    .ls-1 {
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Authenticate Session - Secure Node{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bg-blob {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: var(--primary);
+        filter: blur(80px);
+        opacity: 0.15;
+        border-radius: 50%;
+        z-index: -1;
+        animation: float 20s infinite alternate;
+    }
+
+    .blob-1 {
+        top: -100px;
+        right: -100px;
+        background: #8b5cf6;
+    }
+
+    .blob-2 {
+        bottom: -100px;
+        left: -100px;
+        background: #6366f1;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        100% {
+            transform: translate(50px, 50px) scale(1.2);
+        }
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 440px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-header i {
+        background: linear-gradient(135deg, #818cf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3.5rem;
+    }
+
+    .input-group-text {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-right: none !important;
+        color: #64748b !important;
+        border-top-left-radius: 14px !important;
+        border-bottom-left-radius: 14px !important;
+    }
+
+    .form-control {
+        border-left: none !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+
+    .form-control:focus+.input-group-text,
+    .input-group:focus-within .input-group-text {
+        border-color: var(--primary) !important;
+        color: var(--primary) !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center login-container">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <div class="glass-card login-card">
+        <div class="text-center mb-5 login-header">
+            <div class="mb-4">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <h2 class="fw-bold mb-2">Welcome Back</h2>
+            <p class="text-muted">Enter credentials to access security node</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger d-flex align-items-center mb-4"
+            style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; border-radius: 14px;">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login_submit') }}">
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-muted mb-2 ls-1">USERNAME</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control" placeholder="admin" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <label class="form-label small fw-bold text-muted mb-2 ls-1">PASSWORD</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-key"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3">
+                <span class="d-flex align-items-center justify-content-center">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Authenticate Session
+                </span>
+            </button>
+        </form>
+
+        <div class="mt-5 text-center">
+            <p class="text-muted small mb-0">System Version 2.0.4-LTS</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

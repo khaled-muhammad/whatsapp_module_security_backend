@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Global Contacts - Secure Node{% endblock %}
+
+{% block body %}
+<aside class="sidebar">
+    <div class="brand">
+        <i class="bi bi-shield-lock-fill me-3"></i>SECURE NODE
+    </div>
+
+    <nav class="nav flex-column mb-auto">
+        <a class="nav-link" href="{{ url_for('dashboard') }}">
+            <i class="bi bi-grid-1x2-fill"></i>Dashboard
+        </a>
+        <a class="nav-link" href="{{ url_for('users_page') }}">
+            <i class="bi bi-people-fill"></i>User Management
+        </a>
+        <a class="nav-link active" href="{{ url_for('contacts_page') }}">
+            <i class="bi bi-person-lines-fill"></i>Global Contacts
+        </a>
+        <a class="nav-link" href="{{ url_for('messages_page') }}">
+            <i class="bi bi-chat-square-text-fill"></i>Message Logs
+        </a>
+    </nav>
+
+    <div class="pt-4 mt-4 border-top border-secondary border-opacity-25">
+        <div class="glass-card p-3 mb-3 border-0" style="background: rgba(255, 255, 255, 0.03);">
+            <div class="user-badge">
+                <div class="avatar shadow-sm">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small text-white">{{ user.username }}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">{{ user.role|upper }} ACCOUNT</div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('logout') }}"
+            class="glass-btn w-100 d-flex align-items-center justify-content-center text-decoration-none">
+            <i class="bi bi-box-arrow-left me-2"></i>Terminate Session
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold mb-1" style="letter-spacing: -1px;">Intelligence Hub</h1>
+            <p class="text-muted mb-0">Unified repository of {{ total }} discovered contacts</p>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="glass-card mb-5 border-0 shadow-sm" style="background: rgba(255, 255, 255, 0.02);">
+        <form method="GET" class="row g-3">
+            <div class="col-lg-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 ps-4">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control border-0 bg-transparent py-3"
+                        placeholder="Filter by cryptographic phone or identity name..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-lg-2 d-flex gap-2 pe-3">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+                {% if search %}
+                <a href="{{ url_for('contacts_page') }}"
+                    class="glass-btn d-flex align-items-center justify-content-center"
+                    style="padding: 0 1rem;">Reset</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <div class="glass-card border-0">
+        {% if contacts %}
+        <div class="table-responsive">
+            <table class="table table-dark align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">CRYPTOGRAPHIC PHONE</th>
+                        <th>DISCOVERED NAME</th>
+                        <th>ORIGIN SOURCE</th>
+                        <th class="pe-4">ACQUISITION TIME</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in contacts %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm me-3 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 32px; height: 32px;">
+                                    <i class="bi bi-telephone-fill" style="font-size: 0.8rem;"></i>
+                                </div>
+                                <code class="text-primary fw-bold" style="font-size: 0.9rem;">+{{ c.phone }}</code>
+                            </div>
+                        </td>
+                        <td class="fw-medium text-white">{{ c.name or '<span class="text-muted opacity-50">UNRECOGNIZED
+                                ENTITY</span>'|safe }}</td>
+                        <td>
+                            {% if c.source_group %}
+                            <span
+                                class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3">
+                                <i class="bi bi-hash me-1"></i>{{ c.source_group }}
+                            </span>
+                            {% else %}
+                            <span class="text-muted opacity-25">INTERNAL SCAN</span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4">
+                            <div class="text-muted small">
+                                <i class="bi bi-clock-history me-2"></i>{{ c.scraped_at }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pages > 1 %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center gap-2 mb-0 border-0">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link glass-btn p-0 d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;"
+                        href="?page={{ page - 1 }}{% if search %}&search={{ search }}{% endif %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for p in range(1, pages + 1) %}
+                {% if p <= 3 or p> pages - 3 or (p >= page - 1 and p <= page + 1) %} <li
+                        class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link glass-btn p-0 d-flex align-items-center justify-content-center {% if p == page %}btn-primary border-0 text-white{% endif %}"
+                            style="width: 40px; height: 40px;"
+                            href="?page={{ p }}{% if search %}&search={{ search }}{% endif %}">{{ p }}</a>
+                        </li>
+                        {% elif p == 4 or p == pages - 3 %}
+                        <li class="page-item disabled"><span
+                                class="page-link bg-transparent border-0 text-muted">...</span></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if page < pages %} <li class="page-item">
+                            <a class="page-link glass-btn p-0 d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;"
+                                href="?page={{ page + 1 }}{% if search %}&search={{ search }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            </li>
+                            {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <div class="mb-4">
+                <i class="bi bi-person-lines-fill" style="font-size: 4rem; opacity: 0.2;"></i>
+            </div>
+            <h4 class="fw-bold text-white mb-2">No Intelligence Records</h4>
+            <p class="text-muted">{% if search %}No records match your cryptographic query.{% else %}Telemetry capture
+                has not yet initialized any contact data.{% endif %}</p>
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
